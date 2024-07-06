@@ -1,8 +1,5 @@
 import {Schema} from "mongoose";
 
-export interface IAuthUser{
-    token:string;
-}
 export interface IUser{
     name:string;
     firstname:string;
@@ -10,7 +7,7 @@ export interface IUser{
     signature:string;
 }
 
-export const userSchema = new Schema<IUser&IAuthUser>({
+export const userSchema = new Schema<IUser>({
     name: {
         type: Schema.Types.String,
         required: true
@@ -27,10 +24,6 @@ export const userSchema = new Schema<IUser&IAuthUser>({
         type: Schema.Types.String,
         required: true
     },
-    token:{
-        type:Schema.Types.String,
-        required:true
-    }
 },{
     versionKey: false
 });
