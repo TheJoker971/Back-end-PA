@@ -18,7 +18,7 @@ export class AuthService{
             const user = await this.userModel.create({
                 firstname: firstname,
                 name: name,
-                login: login,
+                mail: login,
                 signature: signature
             });
             return ServiceResult.success(user);
@@ -36,7 +36,7 @@ export class AuthService{
     async log(login: string, signature: string): Promise<ServiceResult<ISession>> {
         try {
             const user = await this.userModel.findOne({
-                login: login,
+                mail: login,
                 signature: signature
             }).exec();
             if(user !== null) {

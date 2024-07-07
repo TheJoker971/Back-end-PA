@@ -24,7 +24,7 @@ class AuthService {
                 const user = yield this.userModel.create({
                     firstname: firstname,
                     name: name,
-                    login: login,
+                    mail: login,
                     signature: signature
                 });
                 return service_result_1.ServiceResult.success(user);
@@ -45,7 +45,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield this.userModel.findOne({
-                    login: login,
+                    mail: login,
                     signature: signature
                 }).exec();
                 if (user !== null) {
