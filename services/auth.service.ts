@@ -13,9 +13,11 @@ export class AuthService{
         this.sessionModel = modelRegistry.sessionModel;
     }
 
-    async subscribe(login: string, signature: string): Promise<ServiceResult<IUser>> {
+    async subscribe(firstname: string, name: string, login: string, signature: string): Promise<ServiceResult<IUser>> {
         try {
             const user = await this.userModel.create({
+                firstname: firstname,
+                name: name,
                 login: login,
                 signature: signature
             });
