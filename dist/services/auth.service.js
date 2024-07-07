@@ -20,6 +20,10 @@ class AuthService {
     }
     subscribe(firstname, name, login, signature) {
         return __awaiter(this, void 0, void 0, function* () {
+            const existingWallet = yield this.userModel.findOne({ signature: signature });
+            if (existingWallet) {
+                return service_result_1.ServiceResult.conflict();
+            }
             try {
                 const user = yield this.userModel.create({
                     firstname: firstname,

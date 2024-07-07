@@ -14,6 +14,12 @@ export class AuthService{
     }
 
     async subscribe(firstname: string, name: string, login: string, signature: string): Promise<ServiceResult<IUser>> {
+        
+        const existingWallet = await this.userModel.findOne({ signature: signature });
+        if (existingWallet) {
+            return ServiceResult.conflict();
+        }
+
         try {
             const user = await this.userModel.create({
                 firstname: firstname,
