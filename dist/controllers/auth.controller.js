@@ -22,7 +22,7 @@ class AuthController {
     }
     subscribe(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.authService.subscribe(req.body.login, req.body.signature);
+            const sr = yield this.authService.subscribe(req.body.firstname, req.body.name, req.body.login, req.body.signature);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
