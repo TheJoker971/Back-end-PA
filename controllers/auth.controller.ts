@@ -10,7 +10,7 @@ export class AuthController {
     }
 
     async subscribe(req: Request, res: Response) {
-        const sr= await this.authService.subscribe(req.body.login, req.body.signature);
+        const sr= await this.authService.subscribe(req.body.firstname, req.body.name, req.body.login, req.body.signature);
         switch (sr.errorCode) {
             case ServiceErrorCode.success:
                 res.status(201).json(sr.result);

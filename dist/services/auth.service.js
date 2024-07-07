@@ -18,10 +18,12 @@ class AuthService {
         this.userModel = modelRegistry.userModel;
         this.sessionModel = modelRegistry.sessionModel;
     }
-    subscribe(login, signature) {
+    subscribe(firstname, name, login, signature) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield this.userModel.create({
+                    firstname: firstname,
+                    name: name,
                     login: login,
                     signature: signature
                 });
