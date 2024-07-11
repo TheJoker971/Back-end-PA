@@ -11,24 +11,25 @@ export class NFTService{
     }
 
 
-    async create(name:string,symbol:string,collection:string,user:string,spicyPower?:number){
+    async create(name:string,symbol:string, address: string,collection:string,user:string,spicyPower?:number){
         try{
             const nft = await this.nftModel.findOne({
                 name:name,
-                symbol:symbol
+                symbol:symbol,
+                address: address
             }).exec();
             if(nft !== null){
                 return ServiceResult.conflict();
             }
             // @ts-ignore
-            const newNFT =(spicyPower === undefined) ? await this.nftModel.create(name,symbol,null,collection,user) : this.nftModel.create(name,symbol,spicyPower,collection,user);
+            const newNFT =(spicyPower === undefined) ? await this.nftModel.create(name,symbol,address,null,collection,user) : this.nftModel.create(name,symbol,address,spicyPower,collection,user);
             return ServiceResult.success(newNFT);
         }catch(err){
             return ServiceResult.failed();
         }
     }
 
-    async update(idNFT:string,name:string,symbol:string,collection:string,user:string,spicyPower?:number){
+    async update(idNFT:string,name:string,symbol:string,address:string,collection:string,user:string,spicyPower?:number){
         try{
             const isUser = await this.nftModel.findOne({_id:idNFT,user:user}).exec();
             let update;
@@ -38,6 +39,7 @@ export class NFTService{
                         $set:{
                             name:name,
                             symbol:symbol,
+                            address:address,
                             spicyPower:spicyPower,
                             collection: collection,
                             user:user
@@ -49,6 +51,7 @@ export class NFTService{
                         $set:{
                             name:name,
                             symbol:symbol,
+                            address:address,
                             collection:collection,
                             user:user
                         }
