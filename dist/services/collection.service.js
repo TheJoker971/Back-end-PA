@@ -27,11 +27,9 @@ class CollectionService {
                     return service_result_1.ServiceResult.conflict();
                 }
                 const newCollection = yield this.collectionModel.create(name, symbol, user);
-                console.log("hey");
                 return service_result_1.ServiceResult.success(newCollection);
             }
             catch (err) {
-                console.log("No");
                 return service_result_1.ServiceResult.failed();
             }
         });

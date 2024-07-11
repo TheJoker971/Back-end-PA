@@ -10,7 +10,7 @@ export class CollectionController {
     }
 
     async create(req:Request, res:Response){
-        const sr = await this.collectionService.create(req.body.name,req.body.symbol,req.body.user as string);
+        const sr = await this.collectionService.create(req.body.name,req.body.symbol,req.body.address,req.body.user as string);
         console.log(req.body.name,req.body.symbol,req.body.user)
         switch(sr.errorCode){
             case ServiceErrorCode.success:
@@ -23,7 +23,7 @@ export class CollectionController {
     }
 
     async update(req:Request, res:Response){
-        const sr = await this.collectionService.update(req.params.idCollection,req.body.symbol,req.body.name,req.user as string);
+        const sr = await this.collectionService.update(req.params.idCollection,req.body.symbol,req.body.address,req.body.name,req.user as string);
         switch(sr.errorCode){
             case ServiceErrorCode.success:
                 res.status(201).json(sr.result);

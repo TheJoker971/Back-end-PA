@@ -15,30 +15,32 @@ export class CollectionService{
     }
 
 
-    async create(name:string, symbol: string, user:string){
+    async create(name:string, symbol: string, address:string,user:string){
         try{
             const collection = await this.collectionModel.findOne({
                 name:name,
-                symbol: symbol
+                symbol: symbol,
+                address: address
             }).exec();
             if(collection !== null){
                 return ServiceResult.conflict();
             }
-            const newCollection = await this.collectionModel.create(name,symbol,user);
+            const newCollection = await this.collectionModel.create(name,symbol,address,user);
             return ServiceResult.success(newCollection);
         }catch(err){
             return ServiceResult.failed();
         }
     }
 
-    async update(idCollection:string,name:string,symbol:string,user:string){
+    async update(idCollection:string,name:string,symbol:string,address:string,user:string){
         try{
             const isUser = await this.collectionModel.findOne({_id:idCollection,user:user}).exec();
             if(isUser !== null){
                 const update = await this.collectionModel.findByIdAndUpdate(idCollection,{
                     $set:{
                         name:name,
-                        symbol:symbol
+                        symbol:symbol,
+                        address: address
                     }
                 });
                 return ServiceResult.success(update);
