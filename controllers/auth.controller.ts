@@ -2,7 +2,7 @@ import express from "express";
 import {Router, Request, Response} from "express";
 import {AuthService} from "../services";
 import {ServiceErrorCode} from "../services/service.result";
-import {SessionMiddleware} from "../middlewares/session.middleware";
+import {SessionMiddleware} from "../middlewares/";
 
 export class AuthController {
 

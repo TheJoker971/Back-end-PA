@@ -1,8 +1,7 @@
-import {IUser} from "../models/user.model";
-import {model, Model} from "mongoose";
+import {Model} from "mongoose";
 import {ServiceResult} from "./service.result";
 import {SecurityUtils} from "../utils";
-import { ISession, ModelRegistry } from "../models";
+import { ISession, ModelRegistry, IUser } from "../models";
 
 export class AuthService{
     private userModel : Model<IUser>;

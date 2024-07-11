@@ -1,14 +1,15 @@
 import {IUser} from "./user.model";
 import {Schema} from "mongoose";
+import {ICollection} from "./collection.model";
 
 
 export interface INFT {
     name:string;
     spicyPower:number;
-    owner:IUser;
+    collection:ICollection;
 }
 
-export const NFTModel = new Schema<INFT>({
+export const nftSchema = new Schema<INFT>({
     name:{
         type: Schema.Types.String,
         required: true
@@ -17,10 +18,10 @@ export const NFTModel = new Schema<INFT>({
         type: Schema.Types.Number,
         required:true
     },
-    owner:{
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+    collection:{
+        type:Schema.Types.ObjectId,
+        ref: "Collection",
+        required:true
     }
 },{
     versionKey: false
