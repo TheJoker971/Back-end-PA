@@ -5,12 +5,17 @@ import {ICollection} from "./collection.model";
 
 export interface INFT {
     name:string;
+    symbol: string;
     spicyPower:number;
     collection:ICollection;
 }
 
 export const nftSchema = new Schema<INFT>({
     name:{
+        type: Schema.Types.String,
+        required: true
+    },
+    symbol:{
         type: Schema.Types.String,
         required: true
     },

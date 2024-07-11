@@ -20,6 +20,7 @@ const cors_1 = __importDefault(require("cors"));
 const models_1 = require("./models");
 const controllers_1 = require("./controllers");
 const services_1 = require("./services");
+const nft_controller_1 = require("./controllers/nft.controller");
 function launchAPI() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield utils_1.MongooseUtils.open();
@@ -28,7 +29,11 @@ function launchAPI() {
         app.use((0, cors_1.default)());
         const authService = new services_1.AuthService(registry);
         const authController = new controllers_1.AuthController(authService);
+        const collectionController = new controllers_1.CollectionController(authService, new services_1.CollectionService(registry));
+        const nftController = new nft_controller_1.NFTController(authService, new services_1.NFTService(registry));
         app.use('/auth', authController.buildRoutes());
+        app.use('/collection', collectionController.buildRoutes());
+        app.use('/nft', nftController.buildRoutes());
         app.listen(process.env.PORT, function () {
             console.log(`Listening on ${process.env.PORT}`);
         });

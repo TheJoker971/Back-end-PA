@@ -17,3 +17,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./model.registry"), exports);
 __exportStar(require("./user.model"), exports);
 __exportStar(require("./session.model"), exports);
+__exportStar(require("./collection.model"), exports);
+__exportStar(require("./nft.model"), exports);

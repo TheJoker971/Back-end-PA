@@ -15,28 +15,30 @@ export class CollectionService{
     }
 
 
-    async create(name:string,owner:string){
+    async create(name:string, symbol: string, user:string){
         try{
             const collection = await this.collectionModel.findOne({
-                name:name
+                name:name,
+                symbol: symbol
             }).exec();
             if(collection !== null){
                 return ServiceResult.conflict();
             }
-            const newCollection = await this.collectionModel.create(name,owner);
+            const newCollection = await this.collectionModel.create(name,symbol,user);
             return ServiceResult.success(newCollection);
         }catch(err){
             return ServiceResult.failed();
         }
     }
 
-    async update(idCollection:string,name:string,owner:string){
+    async update(idCollection:string,name:string,symbol:string,user:string){
         try{
-            const isOwner = await this.collectionModel.findOne({_id:idCollection,owner:owner}).exec();
-            if(isOwner !== null){
+            const isUser = await this.collectionModel.findOne({_id:idCollection,user:user}).exec();
+            if(isUser !== null){
                 const update = await this.collectionModel.findByIdAndUpdate(idCollection,{
                     $set:{
-                        name:name
+                        name:name,
+                        symbol:symbol
                     }
                 });
                 return ServiceResult.success(update);
@@ -47,14 +49,14 @@ export class CollectionService{
         }
     }
 
-    async delete(idCollection:string, owner:string){
+    async delete(idCollection:string, user:string){
         try{
             const hasNFT = await this.nftModel.findOne({collection:idCollection}).exec();
             if(hasNFT !== null){
                 return ServiceResult.conflict();
             }
-            const isOwner = await this.collectionModel.findOne({_id:idCollection,owner:owner}).exec();
-            if(isOwner !== null) {
+            const isUser = await this.collectionModel.findOne({_id:idCollection,user:user}).exec();
+            if(isUser !== null) {
                 const remove = await this.collectionModel.findByIdAndDelete(idCollection).exec();
                 return ServiceResult.success(remove);
             }
@@ -77,16 +79,14 @@ export class CollectionService{
 
     }
 
-    async getAllCollectionUser(idUser:string){
-        try{
-            const collections = await this.collectionModel.find({
-                owner:idUser
-            }).populate("user").exec();
-            if(collections !== null){
+    async getAllCollectionUser(idUser: string) {
+        try {
+            const collections = await this.collectionModel.find({ user: idUser }).populate("user").exec();
+            if (collections !== null) {
                 return ServiceResult.success(collections);
             }
             return ServiceResult.notFound();
-        }catch(err){
+        } catch (err) {
             return ServiceResult.failed();
         }
     }

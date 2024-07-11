@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const express_1 = __importDefault(require("express"));
 const service_result_1 = require("../services/service.result");
-const session_middleware_1 = require("../middlewares/session.middleware");
+const middlewares_1 = require("../middlewares/");
 class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -62,7 +62,7 @@ class AuthController {
         const router = express_1.default.Router();
         router.post('/subscribe', express_1.default.json(), this.subscribe.bind(this));
         router.post('/login', express_1.default.json(), this.login.bind(this));
-        router.get('/me', session_middleware_1.SessionMiddleware.isLogged(this.authService), this.me.bind(this));
+        router.get('/me', middlewares_1.SessionMiddleware.isLogged(this.authService), this.me.bind(this));
         return router;
     }
 }

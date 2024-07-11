@@ -4,7 +4,8 @@ import {Schema} from "mongoose";
 
 export interface ICollection {
     name: string;
-    owner:IUser;
+    symbol: string;
+    user:IUser;
 }
 
 export const collectionSchema = new Schema<ICollection>({
@@ -12,7 +13,11 @@ export const collectionSchema = new Schema<ICollection>({
         type:Schema.Types.String,
         required: true
     },
-    owner:{
+    symbol:{
+        type:Schema.Types.String,
+        required: true
+    },
+    user:{
         type:Schema.Types.ObjectId,
         required: true
     }

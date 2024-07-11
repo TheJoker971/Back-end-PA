@@ -11,34 +11,36 @@ export class NFTService{
     }
 
 
-    async create(name:string,collection:string,owner:string,spicyPower?:number){
+    async create(name:string,symbol:string,collection:string,user:string,spicyPower?:number){
         try{
             const nft = await this.nftModel.findOne({
-                name:name
+                name:name,
+                symbol:symbol
             }).exec();
             if(nft !== null){
                 return ServiceResult.conflict();
             }
             // @ts-ignore
-            const newNFT =(spicyPower === undefined) ? await this.nftModel.create(name,null,collection,owner) : this.nftModel.create(name,spicyPower,collection,owner);
+            const newNFT =(spicyPower === undefined) ? await this.nftModel.create(name,symbol,null,collection,user) : this.nftModel.create(name,symbol,spicyPower,collection,user);
             return ServiceResult.success(newNFT);
         }catch(err){
             return ServiceResult.failed();
         }
     }
 
-    async update(idNFT:string,name:string,collection:string,owner:string,spicyPower?:number){
+    async update(idNFT:string,name:string,symbol:string,collection:string,user:string,spicyPower?:number){
         try{
-            const isOwner = await this.nftModel.findOne({_id:idNFT,owner:owner}).exec();
+            const isUser = await this.nftModel.findOne({_id:idNFT,user:user}).exec();
             let update;
-            if(isOwner !== null){
+            if(isUser !== null){
                 if(spicyPower !== undefined){
                     update = await this.nftModel.findByIdAndUpdate(idNFT,{
                         $set:{
                             name:name,
+                            symbol:symbol,
                             spicyPower:spicyPower,
                             collection: collection,
-                            owner:owner
+                            user:user
 
                         }
                     });
@@ -46,8 +48,9 @@ export class NFTService{
                     update = await this.nftModel.findByIdAndUpdate(idNFT,{
                         $set:{
                             name:name,
+                            symbol:symbol,
                             collection:collection,
-                            owner:owner
+                            user:user
                         }
                     });
                 }
@@ -60,10 +63,10 @@ export class NFTService{
         }
     }
 
-    async delete(idNFT:string, owner:string){
+    async delete(idNFT:string, user:string){
         try{
-            const isOwner = await this.nftModel.findOne({_id:idNFT,owner:owner}).exec();
-            if(isOwner !== null) {
+            const isUser = await this.nftModel.findOne({_id:idNFT,user:user}).exec();
+            if(isUser !== null) {
                 const remove = await this.nftModel.findByIdAndDelete(idNFT).exec();
                 return ServiceResult.success(remove);
             }
