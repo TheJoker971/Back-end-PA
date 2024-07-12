@@ -2,14 +2,14 @@ import {IUser} from "./user.model";
 import {Schema} from "mongoose";
 
 
-export interface ICollection {
+export interface IPack {
     name: string;
     symbol: string;
     address: string;
-    user:IUser;
+    user:IUser|string;
 }
 
-export const collectionSchema = new Schema<ICollection>({
+export const packSchema = new Schema<IPack>({
     name:{
         type:Schema.Types.String,
         required: true
@@ -24,6 +24,9 @@ export const collectionSchema = new Schema<ICollection>({
     },
     user:{
         type:Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref:'User'
     }
+},{
+    versionKey : false
 });

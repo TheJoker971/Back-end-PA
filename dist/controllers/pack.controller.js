@@ -12,24 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NFTController = void 0;
+exports.PackController = void 0;
 const express_1 = __importDefault(require("express"));
 const service_result_1 = require("../services/service.result");
 const middlewares_1 = require("../middlewares/");
-class NFTController {
-    constructor(authService, nftService) {
+class PackController {
+    constructor(authService, collectionService) {
         this.authService = authService;
-        this.nftService = nftService;
+        this.collectionService = collectionService;
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            let sr;
-            if (req.body.spicyPower === undefined) {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.collection);
-            }
-            else {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.collection, req.body.spicyPower);
-            }
+            const sr = yield this.collectionService.create(req.body.name, req.body.symbol, req.body.address, req.user);
+            console.log(sr.errorCode);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
@@ -42,7 +37,7 @@ class NFTController {
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.update(req.params.idNFT, req.body.name, req.body.address, req.body.symbol, req.body.collection, req.user);
+            const sr = yield this.collectionService.update(req.params.idCollection, req.body.name, req.body.symbol, req.body.address, req.user);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
@@ -55,7 +50,7 @@ class NFTController {
     }
     delete(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.delete(req.params.idNFT, req.user);
+            const sr = yield this.collectionService.delete(req.params.idCollection, req.user);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(204).json(sr.result);
@@ -66,40 +61,58 @@ class NFTController {
             }
         });
     }
-    getAllNFT(req, res) {
+    getAllCollection(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.getAllNFT();
+            const sr = yield this.collectionService.getAllCollection();
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(200).json(sr.result);
                     break;
                 default:
-                    res.status(500).end();
+                    res.status(500);
                     break;
             }
         });
     }
-    getNFTById(req, res) {
+    getCollectionById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.getNFTById(req.params.idNFT);
+            const sr = yield this.collectionService.getCollectionById(req.params.idCollection);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(200).json(sr.result);
                     break;
                 default:
-                    res.status(500).end();
+                    res.status(500);
+                    break;
+            }
+        });
+    }
+    getAllCollectionUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sr = yield this.collectionService.getAllCollectionUser(req.params.idUser);
+            console.log(sr.errorCode);
+            switch (sr.errorCode) {
+                case service_result_1.ServiceErrorCode.success:
+                    res.status(200).json(sr.result);
+                    break;
+                case service_result_1.ServiceErrorCode.notFound:
+                    res.status(404).json({ message: "No collections found for this user" });
+                    break;
+                default:
+                    res.status(500).json({ message: "Internal server error" });
                     break;
             }
         });
     }
     buildRoutes() {
         const router = express_1.default.Router();
-        router.get('/', this.getAllNFT.bind(this));
+        router.get('/', this.getAllCollection.bind(this));
         router.post('/', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.create.bind(this));
-        router.patch('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
-        router.delete('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
-        router.get('/:idNFT', this.getNFTById.bind(this));
+        router.patch('/:idCollection', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
+        router.delete('/:idCollection', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
+        router.get('/:idCollection', this.getCollectionById.bind(this));
+        router.get('/user/:idUser', this.getAllCollectionUser.bind(this));
         return router;
     }
 }
-exports.NFTController = NFTController;
+exports.PackController = PackController;

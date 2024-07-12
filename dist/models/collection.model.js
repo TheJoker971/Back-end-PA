@@ -11,8 +11,15 @@ exports.collectionSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.String,
         required: true
     },
+    address: {
+        type: mongoose_1.Schema.Types.String,
+        required: true
+    },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'User'
     }
+}, {
+    versionKey: false
 });

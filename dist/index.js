@@ -29,10 +29,10 @@ function launchAPI() {
         app.use((0, cors_1.default)());
         const authService = new services_1.AuthService(registry);
         const authController = new controllers_1.AuthController(authService);
-        const collectionController = new controllers_1.CollectionController(authService, new services_1.CollectionService(registry));
+        const packController = new controllers_1.PackController(authService, new services_1.PackService(registry));
         const nftController = new nft_controller_1.NFTController(authService, new services_1.NFTService(registry));
         app.use('/auth', authController.buildRoutes());
-        app.use('/collection', collectionController.buildRoutes());
+        app.use('/collection', packController.buildRoutes());
         app.use('/nft', nftController.buildRoutes());
         app.listen(process.env.PORT, function () {
             console.log(`Listening on ${process.env.PORT}`);

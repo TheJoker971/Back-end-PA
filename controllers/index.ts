@@ -1,2 +1,2 @@
 export * from './auth.controller';
-export * from './collection.controller';
+export * from './pack.controller';

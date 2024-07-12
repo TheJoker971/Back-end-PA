@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nftSchema = void 0;
+exports.packSchema = void 0;
 const mongoose_1 = require("mongoose");
-exports.nftSchema = new mongoose_1.Schema({
+exports.packSchema = new mongoose_1.Schema({
     name: {
         type: mongoose_1.Schema.Types.String,
         required: true
@@ -15,15 +15,10 @@ exports.nftSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.String,
         required: true
     },
-    spicyPower: {
-        type: mongoose_1.Schema.Types.Number,
-        required: false,
-        default: null
-    },
-    pack: {
+    user: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: "Pack",
-        required: true
+        required: true,
+        ref: 'User'
     }
 }, {
     versionKey: false

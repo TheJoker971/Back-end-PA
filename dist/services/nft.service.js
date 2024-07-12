@@ -14,19 +14,20 @@ const service_result_1 = require("./service.result");
 class NFTService {
     constructor(registry) {
         this.nftModel = registry.nftModel;
+        this.packModel = registry.packModel;
     }
-    create(name, symbol, collection, user, spicyPower) {
+    create(name, symbol, address, pack, spicyPower) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const nft = yield this.nftModel.findOne({
                     name: name,
-                    symbol: symbol
+                    symbol: symbol,
+                    address: address
                 }).exec();
                 if (nft !== null) {
                     return service_result_1.ServiceResult.conflict();
                 }
-                // @ts-ignore
-                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create(name, symbol, null, collection, user) : this.nftModel.create(name, symbol, spicyPower, collection, user);
+                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, address: address, pack: pack }) : yield this.nftModel.create({ name: name, symbol: symbol, address: address, spicyPower: spicyPower, pack: pack });
                 return service_result_1.ServiceResult.success(newNFT);
             }
             catch (err) {
@@ -34,10 +35,10 @@ class NFTService {
             }
         });
     }
-    update(idNFT, name, symbol, collection, user, spicyPower) {
+    update(idNFT, name, symbol, address, pack, user, spicyPower) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const isUser = yield this.nftModel.findOne({ _id: idNFT, user: user }).exec();
+                const isUser = yield this.nftModel.findOne({ _id: idNFT }, { user: user }).populate('pack').exec();
                 let update;
                 if (isUser !== null) {
                     if (spicyPower !== undefined) {
@@ -45,21 +46,23 @@ class NFTService {
                             $set: {
                                 name: name,
                                 symbol: symbol,
+                                address: address,
                                 spicyPower: spicyPower,
-                                collection: collection,
+                                pack: pack,
                                 user: user
                             }
-                        });
+                        }, { new: true });
                     }
                     else {
                         update = yield this.nftModel.findByIdAndUpdate(idNFT, {
                             $set: {
                                 name: name,
                                 symbol: symbol,
-                                collection: collection,
+                                address: address,
+                                pack: pack,
                                 user: user
                             }
-                        });
+                        }, { new: true });
                     }
                     return service_result_1.ServiceResult.success(update);
                 }
@@ -73,7 +76,7 @@ class NFTService {
     delete(idNFT, user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const isUser = yield this.nftModel.findOne({ _id: idNFT, user: user }).exec();
+                const isUser = yield this.nftModel.findById(idNFT, { user: user }).populate('pack').exec();
                 if (isUser !== null) {
                     const remove = yield this.nftModel.findByIdAndDelete(idNFT).exec();
                     return service_result_1.ServiceResult.success(remove);
@@ -102,7 +105,7 @@ class NFTService {
     getNFTById(idNFT) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const nft = yield this.nftModel.findById(idNFT).populate("collection").populate('user').exec();
+                const nft = yield this.nftModel.findById(idNFT).populate("pack").exec();
                 if (nft !== null) {
                     return service_result_1.ServiceResult.success(nft);
                 }

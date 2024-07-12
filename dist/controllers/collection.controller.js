@@ -23,7 +23,7 @@ class CollectionController {
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.collectionService.create(req.body.name, req.body.symbol, req.body.user);
+            const sr = yield this.collectionService.create(req.body.name, req.body.symbol, req.body.address, req.user);
             console.log(req.body.name, req.body.symbol, req.body.user);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
@@ -37,7 +37,7 @@ class CollectionController {
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.collectionService.update(req.params.idCollection, req.body.symbol, req.body.name, req.user);
+            const sr = yield this.collectionService.update(req.params.idCollection, req.body.symbol, req.body.address, req.body.name, req.user);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
@@ -105,7 +105,7 @@ class CollectionController {
     }
     buildRoutes() {
         const router = express_1.default.Router();
-        router.get('/', middlewares_1.SessionMiddleware.isLogged(this.authService), this.getAllCollection.bind(this));
+        router.get('/', this.getAllCollection.bind(this));
         router.post('/', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.create.bind(this));
         router.patch('/:idCollection', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
         router.delete('/:idCollection', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));

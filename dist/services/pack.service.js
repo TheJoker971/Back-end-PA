@@ -9,30 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CollectionService = void 0;
+exports.PackService = void 0;
 const service_result_1 = require("./service.result");
-class CollectionService {
+class PackService {
     constructor(registry) {
-        this.collectionModel = registry.collectionModel;
+        this.packModel = registry.packModel;
         this.nftModel = registry.nftModel;
     }
     create(name, symbol, address, user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const newCollection = yield this.collectionModel.create(name, symbol, address, user);
-                return service_result_1.ServiceResult.success(newCollection);
+                const newPack = yield this.packModel.create({ name: name, symbol: symbol, address: address, user: user });
+                return service_result_1.ServiceResult.success(newPack);
             }
             catch (err) {
                 return service_result_1.ServiceResult.failed();
             }
         });
     }
-    update(idCollection, name, symbol, address, user) {
+    update(idPack, name, symbol, address, user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const isUser = yield this.collectionModel.findOne({ _id: idCollection, user: user }).exec();
+                const isUser = yield this.packModel.findOne({ _id: idPack, user: user }).exec();
                 if (isUser !== null) {
-                    const update = yield this.collectionModel.findByIdAndUpdate(idCollection, {
+                    const update = yield this.packModel.findByIdAndUpdate(idPack, {
                         $set: {
                             name: name,
                             symbol: symbol,
@@ -48,16 +48,16 @@ class CollectionService {
             }
         });
     }
-    delete(idCollection, user) {
+    delete(idPack, user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const hasNFT = yield this.nftModel.findOne({ collection: idCollection }).exec();
+                const hasNFT = yield this.nftModel.findOne({ collection: idPack }).exec();
                 if (hasNFT !== null) {
                     return service_result_1.ServiceResult.conflict();
                 }
-                const isUser = yield this.collectionModel.findOne({ _id: idCollection, user: user }).exec();
+                const isUser = yield this.packModel.findOne({ _id: idPack, user: user }).exec();
                 if (isUser !== null) {
-                    const remove = yield this.collectionModel.findByIdAndDelete(idCollection).exec();
+                    const remove = yield this.packModel.findByIdAndDelete(idPack).exec();
                     return service_result_1.ServiceResult.success(remove);
                 }
                 return service_result_1.ServiceResult.notFound();
@@ -70,9 +70,9 @@ class CollectionService {
     getAllCollection() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const collections = yield this.collectionModel.find().populate("user").exec();
-                if (collections !== null) {
-                    return service_result_1.ServiceResult.success(collections);
+                const packs = yield this.packModel.find().populate("user").exec();
+                if (packs !== null) {
+                    return service_result_1.ServiceResult.success(packs);
                 }
                 return service_result_1.ServiceResult.notFound();
             }
@@ -84,9 +84,9 @@ class CollectionService {
     getAllCollectionUser(idUser) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const collections = yield this.collectionModel.find({ user: idUser }).populate("user").exec();
-                if (collections !== null) {
-                    return service_result_1.ServiceResult.success(collections);
+                const packs = yield this.packModel.find({ user: idUser }).exec();
+                if (packs !== null) {
+                    return service_result_1.ServiceResult.success(packs);
                 }
                 return service_result_1.ServiceResult.notFound();
             }
@@ -95,12 +95,12 @@ class CollectionService {
             }
         });
     }
-    getCollectionById(idCollection) {
+    getCollectionById(idPack) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const collection = yield this.collectionModel.findById(idCollection).populate("user").exec();
-                if (collection !== null) {
-                    return service_result_1.ServiceResult.success(collection);
+                const pack = yield this.packModel.findById(idPack).populate("user").exec();
+                if (pack !== null) {
+                    return service_result_1.ServiceResult.success(pack);
                 }
                 return service_result_1.ServiceResult.notFound();
             }
@@ -110,4 +110,4 @@ class CollectionService {
         });
     }
 }
-exports.CollectionService = CollectionService;
+exports.PackService = PackService;
