@@ -11,7 +11,8 @@ export class PackController {
     }
 
     async create(req:Request, res:Response){
-        const sr = await this.collectionService.create(req.body.name,req.body.symbol,req.body.address,req.user as IUser);
+        console.log(req.body.user)
+        const sr = await this.collectionService.create(req.body.name,req.body.symbol,req.body.address,req.body.user as IUser);
         console.log(sr.errorCode);
         switch(sr.errorCode){
             case ServiceErrorCode.success:
@@ -90,7 +91,7 @@ export class PackController {
     buildRoutes(): Router {
         const router = express.Router();
         router.get('/', this.getAllCollection.bind(this));
-        router.post('/',SessionMiddleware.isLogged(this.authService), express.json(),this.create.bind(this));
+        router.post('/', express.json(),this.create.bind(this));
         router.patch('/:idCollection',SessionMiddleware.isLogged(this.authService), express.json(), this.update.bind(this));
         router.delete('/:idCollection', SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idCollection',this.getCollectionById.bind(this));
