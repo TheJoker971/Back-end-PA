@@ -16,18 +16,19 @@ class NFTService {
         this.nftModel = registry.nftModel;
         this.packModel = registry.packModel;
     }
-    create(name, symbol, address, pack, spicyPower) {
+    create(name, symbol, user, pack, spicyPower) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const nft = yield this.nftModel.findOne({
                     name: name,
                     symbol: symbol,
-                    address: address
                 }).exec();
                 if (nft !== null) {
                     return service_result_1.ServiceResult.conflict();
                 }
-                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, address: address, pack: pack }) : yield this.nftModel.create({ name: name, symbol: symbol, address: address, spicyPower: spicyPower, pack: pack });
+                const newNFT = (spicyPower === undefined)
+                    ? yield this.nftModel.create({ name: name, symbol: symbol, user: user, pack: pack })
+                    : yield this.nftModel.create({ name: name, symbol: symbol, user: user, spicyPower: spicyPower, pack: pack });
                 return service_result_1.ServiceResult.success(newNFT);
             }
             catch (err) {
@@ -35,51 +36,18 @@ class NFTService {
             }
         });
     }
-    update(idNFT, name, symbol, address, pack, user, spicyPower) {
+    update(idNFT, name, symbol, pack, user, spicyPower) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const isUser = yield this.nftModel.findOne({ _id: idNFT }, { user: user }).populate('pack').exec();
+                const isUser = yield this.nftModel.findOne({ _id: idNFT, user: user }).populate('pack').exec();
                 let update;
                 if (isUser !== null) {
+                    const updateData = { name, symbol, pack, user };
                     if (spicyPower !== undefined) {
-                        update = yield this.nftModel.findByIdAndUpdate(idNFT, {
-                            $set: {
-                                name: name,
-                                symbol: symbol,
-                                address: address,
-                                spicyPower: spicyPower,
-                                pack: pack,
-                                user: user
-                            }
-                        }, { new: true });
+                        updateData.spicyPower = spicyPower;
                     }
-                    else {
-                        update = yield this.nftModel.findByIdAndUpdate(idNFT, {
-                            $set: {
-                                name: name,
-                                symbol: symbol,
-                                address: address,
-                                pack: pack,
-                                user: user
-                            }
-                        }, { new: true });
-                    }
+                    update = yield this.nftModel.findByIdAndUpdate(idNFT, { $set: updateData }, { new: true });
                     return service_result_1.ServiceResult.success(update);
-                }
-                return service_result_1.ServiceResult.notFound();
-            }
-            catch (err) {
-                return service_result_1.ServiceResult.failed();
-            }
-        });
-    }
-    delete(idNFT, user) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const isUser = yield this.nftModel.findById(idNFT, { user: user }).populate('pack').exec();
-                if (isUser !== null) {
-                    const remove = yield this.nftModel.findByIdAndDelete(idNFT).exec();
-                    return service_result_1.ServiceResult.success(remove);
                 }
                 return service_result_1.ServiceResult.notFound();
             }

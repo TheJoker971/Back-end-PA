@@ -24,15 +24,19 @@ class NFTController {
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let sr;
-            if (req.body.spicyPower === undefined) {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.collection);
+            const { name, symbol, user, pack, spicyPower } = req.body;
+            if (spicyPower) {
+                sr = yield this.nftService.create(name, symbol, user, pack, spicyPower);
             }
             else {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.collection, req.body.spicyPower);
+                sr = yield this.nftService.create(name, symbol, user, pack);
             }
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
+                    break;
+                case service_result_1.ServiceErrorCode.conflict:
+                    res.status(409).end();
                     break;
                 default:
                     res.status(500).end();
@@ -42,23 +46,20 @@ class NFTController {
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.update(req.params.idNFT, req.body.name, req.body.address, req.body.symbol, req.body.collection, req.user);
+            const { name, symbol, pack, spicyPower } = req.body;
+            let sr;
+            if (spicyPower) {
+                sr = yield this.nftService.update(req.params.idNFT, name, symbol, pack, req.user, spicyPower);
+            }
+            else {
+                sr = yield this.nftService.update(req.params.idNFT, name, symbol, pack, req.user);
+            }
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
                     break;
-                default:
-                    res.status(500).end();
-                    break;
-            }
-        });
-    }
-    delete(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.delete(req.params.idNFT, req.user);
-            switch (sr.errorCode) {
-                case service_result_1.ServiceErrorCode.success:
-                    res.status(204).json(sr.result);
+                case service_result_1.ServiceErrorCode.notFound:
+                    res.status(404).end();
                     break;
                 default:
                     res.status(500).end();
@@ -95,9 +96,8 @@ class NFTController {
     buildRoutes() {
         const router = express_1.default.Router();
         router.get('/', this.getAllNFT.bind(this));
-        router.post('/', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.create.bind(this));
+        router.post('/', express_1.default.json(), this.create.bind(this));
         router.patch('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
-        router.delete('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT', this.getNFTById.bind(this));
         return router;
     }

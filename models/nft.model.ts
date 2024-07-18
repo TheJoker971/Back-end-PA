@@ -7,6 +7,7 @@ export interface INFT {
     name:string;
     symbol: string;
     spicyPower:number;
+    tokenId: number;
     pack:IPack|string;
     user:IUser|string;
 }
