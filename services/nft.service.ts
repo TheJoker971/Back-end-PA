@@ -105,4 +105,16 @@ export class NFTService{
         }
     }
 
+    async getNFTsByPackId(packId: string) {
+        try {
+            const nfts = await this.nftModel.find({ pack: packId }).exec();
+            if (nfts !== null && nfts.length > 0) {
+                return ServiceResult.success(nfts);
+            }
+            return ServiceResult.notFound();
+        } catch (err) {
+            return ServiceResult.failed();
+        }
+    }
+
 }

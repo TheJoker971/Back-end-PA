@@ -92,6 +92,22 @@ class NFTController {
             }
         });
     }
+    getNFTsByPackId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sr = yield this.nftService.getNFTsByPackId(req.params.packId);
+            switch (sr.errorCode) {
+                case service_result_1.ServiceErrorCode.success:
+                    res.status(200).json(sr.result);
+                    break;
+                case service_result_1.ServiceErrorCode.notFound:
+                    res.status(404).json({ message: "No NFTs found for this pack ID." });
+                    break;
+                default:
+                    res.status(500).end();
+                    break;
+            }
+        });
+    }
     buildRoutes() {
         const router = express_1.default.Router();
         router.get('/', this.getAllNFT.bind(this));
@@ -99,6 +115,7 @@ class NFTController {
         router.patch('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
         router.delete('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT', this.getNFTById.bind(this));
+        router.get('/pack/:packId', this.getNFTsByPackId.bind(this));
         return router;
     }
 }

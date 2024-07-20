@@ -116,5 +116,19 @@ class NFTService {
             }
         });
     }
+    getNFTsByPackId(packId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const nfts = yield this.nftModel.find({ pack: packId }).exec();
+                if (nfts !== null && nfts.length > 0) {
+                    return service_result_1.ServiceResult.success(nfts);
+                }
+                return service_result_1.ServiceResult.notFound();
+            }
+            catch (err) {
+                return service_result_1.ServiceResult.failed();
+            }
+        });
+    }
 }
 exports.NFTService = NFTService;

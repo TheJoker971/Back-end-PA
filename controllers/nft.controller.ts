@@ -75,6 +75,21 @@ export class NFTController {
         }
     }
 
+    async getNFTsByPackId(req: Request, res: Response) {
+        const sr = await this.nftService.getNFTsByPackId(req.params.packId);
+        switch (sr.errorCode) {
+            case ServiceErrorCode.success:
+                res.status(200).json(sr.result);
+                break;
+            case ServiceErrorCode.notFound:
+                res.status(404).json({ message: "No NFTs found for this pack ID." });
+                break;
+            default:
+                res.status(500).end();
+                break;
+        }
+    }
+
     buildRoutes(): Router {
         const router = express.Router();
         router.get('/', this.getAllNFT.bind(this));
@@ -82,6 +97,7 @@ export class NFTController {
         router.patch('/:idNFT',SessionMiddleware.isLogged(this.authService), express.json(), this.update.bind(this));
         router.delete('/:idNFT', SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT',this.getNFTById.bind(this));
+        router.get('/pack/:packId', this.getNFTsByPackId.bind(this)); 
         return router;
     }
 }
