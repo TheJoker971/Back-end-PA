@@ -21,6 +21,7 @@ const models_1 = require("./models");
 const controllers_1 = require("./controllers");
 const services_1 = require("./services");
 const nft_controller_1 = require("./controllers/nft.controller");
+const storage_blob_1 = require("@azure/storage-blob");
 function launchAPI() {
     return __awaiter(this, void 0, void 0, function* () {
         const db = yield utils_1.MongooseUtils.open();
@@ -34,6 +35,28 @@ function launchAPI() {
         app.use('/auth', authController.buildRoutes());
         app.use('/collection', packController.buildRoutes());
         app.use('/nft', nftController.buildRoutes());
+        const accountName = process.env.ACCOUNT_NAME;
+        const accountKey = process.env.ACCOUNT_KEY;
+        const containerName = process.env.CONTAINER_NAME;
+        const sharedKeyCredential = new storage_blob_1.StorageSharedKeyCredential(accountName, accountKey);
+        const blobServiceClient = new storage_blob_1.BlobServiceClient(`https://${accountName}.blob.core.windows.net`, sharedKeyCredential);
+        app.get('/cloud', (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const blobName = req.query.blobName;
+            const containerClient = blobServiceClient.getContainerClient(containerName);
+            const blobClient = containerClient.getBlobClient(blobName);
+            const expiresOn = new Date();
+            expiresOn.setMinutes(expiresOn.getMinutes() + 60); // 1 hour expiry
+            const sasOptions = {
+                containerName,
+                blobName,
+                permissions: storage_blob_1.BlobSASPermissions.parse("rw"),
+                startsOn: new Date(),
+                expiresOn,
+            };
+            const sasToken = (0, storage_blob_1.generateBlobSASQueryParameters)(sasOptions, sharedKeyCredential).toString();
+            const sasUrl = `${blobClient.url}?${sasToken}`;
+            res.json({ sasUrl });
+        }));
         app.listen(process.env.PORT, function () {
             console.log(`Listening on ${process.env.PORT}`);
         });
