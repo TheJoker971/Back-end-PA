@@ -11,15 +11,18 @@ const addTextToImage = async (file: Buffer, text: string): Promise<string> => {
 
     // Ajouter le texte
     ctx.font = 'bold 30px Arial';
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = 'white';
     ctx.fillText(text, 50, 50); // Vous pouvez ajuster la position selon vos besoins
 
     // Convertir le canvas en buffer
     const buffer = canvas.toBuffer('image/png');
 
-    // Télécharger l'image sur Firebase Storage
+    // Télécharger l'image sur Firebase Storage avec le type MIME défini
     const storageRef = ref(storage, `images/${text}.png`);
-    const snapshot = await uploadBytes(storageRef, buffer);
+    const metadata = {
+        contentType: 'image/png',
+    };
+    const snapshot = await uploadBytes(storageRef, buffer, metadata);
     const downloadURL = await getDownloadURL(snapshot.ref);
 
     return downloadURL;

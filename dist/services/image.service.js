@@ -19,13 +19,16 @@ const addTextToImage = (file, text) => __awaiter(void 0, void 0, void 0, functio
     ctx.drawImage(image, 0, 0);
     // Ajouter le texte
     ctx.font = 'bold 30px Arial';
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = 'white';
     ctx.fillText(text, 50, 50); // Vous pouvez ajuster la position selon vos besoins
     // Convertir le canvas en buffer
     const buffer = canvas.toBuffer('image/png');
-    // Télécharger l'image sur Firebase Storage
+    // Télécharger l'image sur Firebase Storage avec le type MIME défini
     const storageRef = (0, firebase_1.ref)(firebase_1.storage, `images/${text}.png`);
-    const snapshot = yield (0, firebase_1.uploadBytes)(storageRef, buffer);
+    const metadata = {
+        contentType: 'image/png',
+    };
+    const snapshot = yield (0, firebase_1.uploadBytes)(storageRef, buffer, metadata);
     const downloadURL = yield (0, firebase_1.getDownloadURL)(snapshot.ref);
     return downloadURL;
 });
