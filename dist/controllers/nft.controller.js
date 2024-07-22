@@ -25,11 +25,11 @@ class NFTController {
         return __awaiter(this, void 0, void 0, function* () {
             let sr;
             if (req.body.spicyPower === undefined) {
-                console.log(req.body.name, req.body.symbol, req.body.address, req.body.pack, req.body.user);
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.pack, req.body.user);
+                console.log(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user);
             }
             else {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.pack, req.body.spicyPower);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.spicyPower);
             }
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:

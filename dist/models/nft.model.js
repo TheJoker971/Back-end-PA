@@ -16,6 +16,11 @@ exports.nftSchema = new mongoose_1.Schema({
         required: false,
         default: null
     },
+    tokenId: {
+        type: mongoose_1.Schema.Types.Number,
+        required: true,
+        default: null
+    },
     pack: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Pack",

@@ -14,19 +14,17 @@ export class NFTService{
     }
 
 
-    async create(name:string,symbol:string, address: string,pack:IPack, user: IUser, spicyPower?:number){
+    async create(name:string,symbol:string, tokenId: number,address: string,pack:IPack, user: IUser, spicyPower?:number){
         try{
             const nft = await this.nftModel.findOne({
-                name:name,
-                symbol:symbol,
-                address: address
+                tokenId: tokenId
             }).exec();
             if(nft !== null) {
                 return ServiceResult.conflict();
             }
-            console.log(name, address, symbol, user, pack)
+            console.log(name, address, symbol, tokenId, user, pack)
 
-            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,address:address,pack:pack, user: user}) : await this.nftModel.create({name:name,symbol:symbol,address:address,spicyPower:spicyPower as number,pack:pack});
+            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,pack:pack, user: user}) : await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,spicyPower:spicyPower as number,pack:pack});
             return ServiceResult.success(newNFT);
         }catch(err){
             return ServiceResult.failed();

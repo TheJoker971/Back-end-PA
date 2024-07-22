@@ -26,6 +26,11 @@ export const nftSchema = new Schema<INFT>({
         required:false,
         default:null
     },
+    tokenId:{
+        type: Schema.Types.Number,
+        required:true,
+        default:null
+    },
     pack:{
         type:Schema.Types.ObjectId,
         ref: "Pack",
