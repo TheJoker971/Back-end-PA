@@ -25,10 +25,11 @@ class NFTController {
         return __awaiter(this, void 0, void 0, function* () {
             let sr;
             if (req.body.spicyPower === undefined) {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.collection);
+                console.log(req.body.name, req.body.symbol, req.body.address, req.body.pack, req.body.user);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.pack, req.body.user);
             }
             else {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.collection, req.body.spicyPower);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.address, req.body.pack, req.body.spicyPower);
             }
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
@@ -111,7 +112,7 @@ class NFTController {
     buildRoutes() {
         const router = express_1.default.Router();
         router.get('/', this.getAllNFT.bind(this));
-        router.post('/', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.create.bind(this));
+        router.post('/', express_1.default.json(), this.create.bind(this));
         router.patch('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
         router.delete('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT', this.getNFTById.bind(this));

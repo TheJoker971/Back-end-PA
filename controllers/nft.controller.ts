@@ -13,9 +13,10 @@ export class NFTController {
     async create(req:Request, res:Response){
         let sr;
         if(req.body.spicyPower === undefined){
-            sr = await this.nftService.create(req.body.name,req.body.symbol,req.body.address,req.body.collection);
+            console.log(req.body.name,req.body.symbol,req.body.address,req.body.pack, req.body.user)
+            sr = await this.nftService.create(req.body.name,req.body.symbol,req.body.address,req.body.pack, req.body.user);
         }else{
-            sr = await this.nftService.create(req.body.name,req.body.symbol,req.body.address,req.body.collection,req.body.spicyPower);
+            sr = await this.nftService.create(req.body.name,req.body.symbol,req.body.address,req.body.pack,req.body.spicyPower);
         }
         switch(sr.errorCode){
             case ServiceErrorCode.success:
@@ -93,7 +94,7 @@ export class NFTController {
     buildRoutes(): Router {
         const router = express.Router();
         router.get('/', this.getAllNFT.bind(this));
-        router.post('/',SessionMiddleware.isLogged(this.authService),express.json(),this.create.bind(this));
+        router.post('/',express.json(),this.create.bind(this));
         router.patch('/:idNFT',SessionMiddleware.isLogged(this.authService), express.json(), this.update.bind(this));
         router.delete('/:idNFT', SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT',this.getNFTById.bind(this));

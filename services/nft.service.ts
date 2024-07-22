@@ -14,7 +14,7 @@ export class NFTService{
     }
 
 
-    async create(name:string,symbol:string, address: string,pack:IPack,spicyPower?:number){
+    async create(name:string,symbol:string, address: string,pack:IPack, user: IUser, spicyPower?:number){
         try{
             const nft = await this.nftModel.findOne({
                 name:name,
@@ -24,7 +24,9 @@ export class NFTService{
             if(nft !== null) {
                 return ServiceResult.conflict();
             }
-            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,address:address,pack:pack}) : await this.nftModel.create({name:name,symbol:symbol,address:address,spicyPower:spicyPower as number,pack:pack});
+            console.log(name, address, symbol, user, pack)
+
+            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,address:address,pack:pack, user: user}) : await this.nftModel.create({name:name,symbol:symbol,address:address,spicyPower:spicyPower as number,pack:pack});
             return ServiceResult.success(newNFT);
         }catch(err){
             return ServiceResult.failed();
