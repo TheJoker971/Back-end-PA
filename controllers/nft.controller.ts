@@ -3,6 +3,8 @@ import {AuthService, NFTService} from "../services";
 import {ServiceErrorCode} from "../services/service.result";
 import {SessionMiddleware} from "../middlewares/";
 import {IUser} from "../models";
+import upload from '../middlewares/uploadMiddleware';
+import addTextToImage from '../services/image.service';
 
 
 export class NFTController {
@@ -91,6 +93,23 @@ export class NFTController {
         }
     }
 
+    async uploadImage(req: Request, res: Response) {
+        try {
+            const { name } = req.body;
+            const file = req.file;
+
+            if (!name || !file) {
+                return res.status(400).json({ message: 'Name and image file are required' });
+            }
+
+            const imageUrl = await addTextToImage(file.buffer, name);
+            res.status(201).json({ imageUrl });
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            res.status(500).json({ error: 'Error uploading image' });
+        }
+    }
+
     buildRoutes(): Router {
         const router = express.Router();
         router.get('/', this.getAllNFT.bind(this));
@@ -99,6 +118,7 @@ export class NFTController {
         router.delete('/:idNFT', SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT',this.getNFTById.bind(this));
         router.get('/pack/:packId', this.getNFTsByPackId.bind(this)); 
+        router.post('/upload-image', upload.single('image'), this.uploadImage.bind(this));
         return router;
     }
 }

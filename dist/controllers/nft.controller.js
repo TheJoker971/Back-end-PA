@@ -16,6 +16,8 @@ exports.NFTController = void 0;
 const express_1 = __importDefault(require("express"));
 const service_result_1 = require("../services/service.result");
 const middlewares_1 = require("../middlewares/");
+const uploadMiddleware_1 = __importDefault(require("../middlewares/uploadMiddleware"));
+const image_service_1 = __importDefault(require("../services/image.service"));
 class NFTController {
     constructor(authService, nftService) {
         this.authService = authService;
@@ -109,6 +111,23 @@ class NFTController {
             }
         });
     }
+    uploadImage(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name } = req.body;
+                const file = req.file;
+                if (!name || !file) {
+                    return res.status(400).json({ message: 'Name and image file are required' });
+                }
+                const imageUrl = yield (0, image_service_1.default)(file.buffer, name);
+                res.status(201).json({ imageUrl });
+            }
+            catch (error) {
+                console.error('Error uploading image:', error);
+                res.status(500).json({ error: 'Error uploading image' });
+            }
+        });
+    }
     buildRoutes() {
         const router = express_1.default.Router();
         router.get('/', this.getAllNFT.bind(this));
@@ -117,6 +136,7 @@ class NFTController {
         router.delete('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT', this.getNFTById.bind(this));
         router.get('/pack/:packId', this.getNFTsByPackId.bind(this));
+        router.post('/upload-image', uploadMiddleware_1.default.single('image'), this.uploadImage.bind(this));
         return router;
     }
 }
