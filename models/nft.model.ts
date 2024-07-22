@@ -1,13 +1,15 @@
 import {Schema} from "mongoose";
 import {IPack} from "./pack.model";
+import { IUser } from "./user.model";
 
 
 export interface INFT {
     name:string;
     symbol: string;
-    address: string;
     spicyPower:number;
+    tokenId: number;
     pack:IPack|string;
+    user:IUser|string;
 }
 
 export const nftSchema = new Schema<INFT>({
@@ -16,10 +18,6 @@ export const nftSchema = new Schema<INFT>({
         required: true
     },
     symbol:{
-        type: Schema.Types.String,
-        required: true
-    },
-    address: {
         type: Schema.Types.String,
         required: true
     },
@@ -32,6 +30,11 @@ export const nftSchema = new Schema<INFT>({
         type:Schema.Types.ObjectId,
         ref: "Pack",
         required:true
+    },
+    user:{
+        type:Schema.Types.ObjectId,
+        required: true,
+        ref:'User'
     }
 },{
     versionKey: false

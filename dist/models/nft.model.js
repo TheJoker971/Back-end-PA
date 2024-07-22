@@ -11,10 +11,6 @@ exports.nftSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.String,
         required: true
     },
-    address: {
-        type: mongoose_1.Schema.Types.String,
-        required: true
-    },
     spicyPower: {
         type: mongoose_1.Schema.Types.Number,
         required: false,
@@ -24,6 +20,11 @@ exports.nftSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Pack",
         required: true
+    },
+    user: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     }
 }, {
     versionKey: false
