@@ -29,7 +29,8 @@ export class NFTController {
     }
 
     async update(req:Request, res:Response){
-        const sr = await this.nftService.update(req.params.idNFT,req.body.name,req.body.address,req.body.symbol,req.body.collection,req.user as IUser);
+        const sr = await this.nftService.update(req.params.idNFT,req.body.name,req.body.address,req.body.symbol,req.body.collection,
+            req.user as IUser, req.body.price, req.body.listed);
         switch(sr.errorCode){
             case ServiceErrorCode.success:
                 res.status(201).json(sr.result);

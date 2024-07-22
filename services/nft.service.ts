@@ -31,7 +31,7 @@ export class NFTService{
         }
     }
 
-    async update(idNFT:string,name:string,symbol:string,address:string,pack:string,user:IUser,spicyPower?:number){
+    async update(idNFT:string,name:string,symbol:string,address:string,pack:string,user:IUser,listed: boolean, spicyPower?:number, price?: number){
         try{
             const isUser = await this.nftModel.findOne({_id:idNFT},{user:user}).populate('pack').exec();
             let update;
@@ -44,7 +44,9 @@ export class NFTService{
                             address:address,
                             spicyPower:spicyPower,
                             pack: pack,
-                            user:user
+                            user:user,
+                            price: price,
+                            listed: listed
 
                         }
                     },{new:true});
@@ -55,7 +57,9 @@ export class NFTService{
                             symbol:symbol,
                             address:address,
                             pack:pack,
-                            user:user
+                            user:user,
+                            price: price,
+                            listed: listed
                         }
                     },{new:true});
                 }

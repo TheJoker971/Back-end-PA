@@ -30,6 +30,16 @@ exports.nftSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
+    },
+    price: {
+        type: mongoose_1.Schema.Types.Number,
+        required: false,
+        default: null
+    },
+    listed: {
+        type: mongoose_1.Schema.Types.Boolean,
+        required: true,
+        default: false
     }
 }, {
     versionKey: false
