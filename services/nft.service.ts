@@ -24,7 +24,7 @@ export class NFTService{
             }
             console.log(name, address, symbol, tokenId, user, pack)
 
-            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,pack:pack, user: user}) : await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,spicyPower:spicyPower as number,pack:pack});
+            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,pack:pack, user: user, listed: false}) : await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,spicyPower:spicyPower as number,pack:pack, listed: false});
             return ServiceResult.success(newNFT);
         }catch(err){
             return ServiceResult.failed();
