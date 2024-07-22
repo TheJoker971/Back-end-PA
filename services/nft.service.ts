@@ -118,4 +118,16 @@ export class NFTService{
         }
     }
 
+    async getAllNFTSUser(idUser: string) {
+        try {
+            const nfts = await this.nftModel.find({ user: idUser }).exec();
+            if (nfts !== null) {
+                return ServiceResult.success(nfts);
+            }
+            return ServiceResult.notFound();
+        } catch (err) {
+            return ServiceResult.failed();
+        }
+    }
+
 }
