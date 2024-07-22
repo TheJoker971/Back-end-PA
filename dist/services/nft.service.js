@@ -16,19 +16,17 @@ class NFTService {
         this.nftModel = registry.nftModel;
         this.packModel = registry.packModel;
     }
-    create(name, symbol, address, pack, user, spicyPower) {
+    create(name, symbol, tokenId, address, pack, user, spicyPower) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const nft = yield this.nftModel.findOne({
-                    name: name,
-                    symbol: symbol,
-                    address: address
+                    tokenId: tokenId
                 }).exec();
                 if (nft !== null) {
                     return service_result_1.ServiceResult.conflict();
                 }
-                console.log(name, address, symbol, user, pack);
-                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, address: address, pack: pack, user: user }) : yield this.nftModel.create({ name: name, symbol: symbol, address: address, spicyPower: spicyPower, pack: pack });
+                console.log(name, address, symbol, tokenId, user, pack);
+                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, pack: pack, user: user }) : yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, spicyPower: spicyPower, pack: pack });
                 return service_result_1.ServiceResult.success(newNFT);
             }
             catch (err) {

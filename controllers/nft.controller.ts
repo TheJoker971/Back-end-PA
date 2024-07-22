@@ -15,10 +15,10 @@ export class NFTController {
     async create(req:Request, res:Response){
         let sr;
         if(req.body.spicyPower === undefined){
-            console.log(req.body.name,req.body.symbol,req.body.address,req.body.pack, req.body.user)
-            sr = await this.nftService.create(req.body.name,req.body.symbol,req.body.address,req.body.pack, req.body.user);
+            console.log(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack, req.body.user)
+            sr = await this.nftService.create(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack, req.body.user);
         }else{
-            sr = await this.nftService.create(req.body.name,req.body.symbol,req.body.address,req.body.pack,req.body.spicyPower);
+            sr = await this.nftService.create(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack,req.body.spicyPower);
         }
         switch(sr.errorCode){
             case ServiceErrorCode.success:
