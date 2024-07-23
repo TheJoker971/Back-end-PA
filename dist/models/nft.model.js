@@ -40,6 +40,10 @@ exports.nftSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.Boolean,
         required: true,
         default: false
+    },
+    tokenURI: {
+        type: mongoose_1.Schema.Types.String,
+        required: true
     }
 }, {
     versionKey: false

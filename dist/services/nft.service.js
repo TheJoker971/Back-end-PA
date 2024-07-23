@@ -16,7 +16,7 @@ class NFTService {
         this.nftModel = registry.nftModel;
         this.packModel = registry.packModel;
     }
-    create(name, symbol, tokenId, address, pack, user, spicyPower) {
+    create(name, symbol, tokenId, address, pack, user, tokenURI, spicyPower) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const nft = yield this.nftModel.findOne({
@@ -26,7 +26,7 @@ class NFTService {
                     return service_result_1.ServiceResult.conflict();
                 }
                 console.log(name, address, symbol, tokenId, user, pack);
-                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, pack: pack, user: user, listed: false }) : yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, spicyPower: spicyPower, pack: pack, listed: false });
+                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, pack: pack, user: user, listed: false, tokenURI }) : yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, spicyPower: spicyPower, pack: pack, listed: false });
                 return service_result_1.ServiceResult.success(newNFT);
             }
             catch (err) {
@@ -34,7 +34,7 @@ class NFTService {
             }
         });
     }
-    update(idNFT, name, symbol, address, pack, user, listed, spicyPower, price) {
+    update(idNFT, name, symbol, address, pack, user, listed, tokenURI, spicyPower, price) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const isUser = yield this.nftModel.findOne({ _id: idNFT }, { user: user }).populate('pack').exec();
@@ -50,7 +50,8 @@ class NFTService {
                                 pack: pack,
                                 user: user,
                                 price: price,
-                                listed: listed
+                                listed: listed,
+                                tokenURI: tokenURI
                             }
                         }, { new: true });
                     }
@@ -63,7 +64,8 @@ class NFTService {
                                 pack: pack,
                                 user: user,
                                 price: price,
-                                listed: listed
+                                listed: listed,
+                                tokenId: tokenURI
                             }
                         }, { new: true });
                     }

@@ -28,10 +28,10 @@ class NFTController {
             let sr;
             if (req.body.spicyPower === undefined) {
                 console.log(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user);
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user, req.body.tokenURI);
             }
             else {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.spicyPower);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.spicyPower, req.body.tokenURI);
             }
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
@@ -45,7 +45,7 @@ class NFTController {
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.update(req.params.idNFT, req.body.name, req.body.address, req.body.symbol, req.body.collection, req.user, req.body.price, req.body.listed);
+            const sr = yield this.nftService.update(req.params.idNFT, req.body.name, req.body.address, req.body.symbol, req.body.collection, req.user, req.body.price, req.body.listed, req.body.tokenId);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
@@ -111,7 +111,6 @@ class NFTController {
             }
         });
     }
-
     getAllNFTSUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const sr = yield this.nftService.getAllNFTSUser(req.params.idUser);
@@ -126,7 +125,9 @@ class NFTController {
                 default:
                     res.status(500).json({ message: "Internal server error" });
                     break;
-
+            }
+        });
+    }
     uploadImage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
