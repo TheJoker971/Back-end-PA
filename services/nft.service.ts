@@ -14,7 +14,7 @@ export class NFTService{
     }
 
 
-    async create(name:string,symbol:string, tokenId: number,address: string,pack:IPack, user: IUser, spicyPower?:number){
+    async create(name:string,symbol:string, tokenId: number,address: string,pack:IPack, user: IUser, tokenURI: string, spicyPower?:number){
         try{
             const nft = await this.nftModel.findOne({
                 tokenId: tokenId
@@ -24,14 +24,14 @@ export class NFTService{
             }
             console.log(name, address, symbol, tokenId, user, pack)
 
-            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,pack:pack, user: user, listed: false}) : await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,spicyPower:spicyPower as number,pack:pack, listed: false});
+            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,pack:pack, user: user, listed: false, tokenURI}) : await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,spicyPower:spicyPower as number,pack:pack, listed: false});
             return ServiceResult.success(newNFT);
         }catch(err){
             return ServiceResult.failed();
         }
     }
 
-    async update(idNFT:string,name:string,symbol:string,address:string,pack:string,user:IUser,listed: boolean, spicyPower?:number, price?: number){
+    async update(idNFT:string,name:string,symbol:string,address:string,pack:string,user:IUser,listed: boolean, tokenURI:string, spicyPower?:number, price?: number){
         try{
             const isUser = await this.nftModel.findOne({_id:idNFT},{user:user}).populate('pack').exec();
             let update;
@@ -46,7 +46,8 @@ export class NFTService{
                             pack: pack,
                             user:user,
                             price: price,
-                            listed: listed
+                            listed: listed,
+                            tokenURI: tokenURI
 
                         }
                     },{new:true});
@@ -59,7 +60,8 @@ export class NFTService{
                             pack:pack,
                             user:user,
                             price: price,
-                            listed: listed
+                            listed: listed,
+                            tokenId: tokenURI
                         }
                     },{new:true});
                 }

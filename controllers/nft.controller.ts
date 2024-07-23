@@ -16,9 +16,9 @@ export class NFTController {
         let sr;
         if(req.body.spicyPower === undefined){
             console.log(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack, req.body.user)
-            sr = await this.nftService.create(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack, req.body.user);
+            sr = await this.nftService.create(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack, req.body.user, req.body.tokenURI);
         }else{
-            sr = await this.nftService.create(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack,req.body.spicyPower);
+            sr = await this.nftService.create(req.body.name,req.body.symbol, req.body.tokenId, req.body.address,req.body.pack,req.body.spicyPower, req.body.tokenURI);
         }
         switch(sr.errorCode){
             case ServiceErrorCode.success:
@@ -32,7 +32,7 @@ export class NFTController {
 
     async update(req:Request, res:Response){
         const sr = await this.nftService.update(req.params.idNFT,req.body.name,req.body.address,req.body.symbol,req.body.collection,
-            req.user as IUser, req.body.price, req.body.listed);
+            req.user as IUser, req.body.price, req.body.listed, req.body.tokenId);
         switch(sr.errorCode){
             case ServiceErrorCode.success:
                 res.status(201).json(sr.result);
@@ -108,24 +108,25 @@ export class NFTController {
             default:
                 res.status(500).json({ message: "Internal server error" });
                 break;
-
-    async uploadImage(req: Request, res: Response) {
-        try {
-            const { name } = req.body;
-            const file = req.file;
-
-            if (!name || !file) {
-                return res.status(400).json({ message: 'Name and image file are required' });
-            }
-
-            const imageUrl = await addTextToImage(file.buffer, name);
-            res.status(201).json({ imageUrl });
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            res.status(500).json({ error: 'Error uploading image' });
-
         }
+}
+
+async uploadImage(req: Request, res: Response) {
+    try {
+        const { name } = req.body;
+        const file = req.file;
+
+        if (!name || !file) {
+            return res.status(400).json({ message: 'Name and image file are required' });
+        }
+
+        const imageUrl = await addTextToImage(file.buffer, name);
+        res.status(201).json({ imageUrl });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ error: 'Error uploading image' });
     }
+}
 
     buildRoutes(): Router {
         const router = express.Router();

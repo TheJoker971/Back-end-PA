@@ -12,6 +12,7 @@ export interface INFT {
     user:IUser|string;
     price: number;
     listed: boolean;
+    tokenURI: string;
 }
 
 export const nftSchema = new Schema<INFT>({
@@ -52,6 +53,10 @@ export const nftSchema = new Schema<INFT>({
         type: Schema.Types.Boolean,
         required: true,
         default: false
+    },
+    tokenURI:{
+        type: Schema.Types.String,
+        required: true
     }
 },{
     versionKey: false
