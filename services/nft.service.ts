@@ -24,14 +24,14 @@ export class NFTService{
             }
             console.log(name, address, symbol, tokenId, user, pack)
 
-            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,pack:pack, user: user}) : await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,spicyPower:spicyPower as number,pack:pack});
+            const newNFT =(spicyPower === undefined) ? await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,pack:pack, user: user, listed: false}) : await this.nftModel.create({name:name,symbol:symbol,tokenId:tokenId,address:address,spicyPower:spicyPower as number,pack:pack, listed: false});
             return ServiceResult.success(newNFT);
         }catch(err){
             return ServiceResult.failed();
         }
     }
 
-    async update(idNFT:string,name:string,symbol:string,address:string,pack:string,user:IUser,spicyPower?:number){
+    async update(idNFT:string,name:string,symbol:string,address:string,pack:string,user:IUser,listed: boolean, spicyPower?:number, price?: number){
         try{
             const isUser = await this.nftModel.findOne({_id:idNFT},{user:user}).populate('pack').exec();
             let update;
@@ -44,7 +44,9 @@ export class NFTService{
                             address:address,
                             spicyPower:spicyPower,
                             pack: pack,
-                            user:user
+                            user:user,
+                            price: price,
+                            listed: listed
 
                         }
                     },{new:true});
@@ -55,7 +57,9 @@ export class NFTService{
                             symbol:symbol,
                             address:address,
                             pack:pack,
-                            user:user
+                            user:user,
+                            price: price,
+                            listed: listed
                         }
                     },{new:true});
                 }
@@ -110,6 +114,18 @@ export class NFTService{
         try {
             const nfts = await this.nftModel.find({ pack: packId }).exec();
             if (nfts !== null && nfts.length > 0) {
+                return ServiceResult.success(nfts);
+            }
+            return ServiceResult.notFound();
+        } catch (err) {
+            return ServiceResult.failed();
+        }
+    }
+
+    async getAllNFTSUser(idUser: string) {
+        try {
+            const nfts = await this.nftModel.find({ user: idUser }).populate('pack').exec();
+            if (nfts !== null) {
                 return ServiceResult.success(nfts);
             }
             return ServiceResult.notFound();
