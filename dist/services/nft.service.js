@@ -26,7 +26,7 @@ class NFTService {
                     return service_result_1.ServiceResult.conflict();
                 }
                 console.log(name, address, symbol, tokenId, user, pack);
-                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, pack: pack, user: user }) : yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, spicyPower: spicyPower, pack: pack });
+                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, pack: pack, user: user, listed: false }) : yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, spicyPower: spicyPower, pack: pack, listed: false });
                 return service_result_1.ServiceResult.success(newNFT);
             }
             catch (err) {
@@ -136,7 +136,7 @@ class NFTService {
     getAllNFTSUser(idUser) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const nfts = yield this.nftModel.find({ user: idUser }).exec();
+                const nfts = yield this.nftModel.find({ user: idUser }).populate('pack').exec();
                 if (nfts !== null) {
                     return service_result_1.ServiceResult.success(nfts);
                 }

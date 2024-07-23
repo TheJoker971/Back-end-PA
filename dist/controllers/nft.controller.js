@@ -130,7 +130,7 @@ class NFTController {
         const router = express_1.default.Router();
         router.get('/', this.getAllNFT.bind(this));
         router.post('/', express_1.default.json(), this.create.bind(this));
-        router.patch('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
+        router.patch('/:idNFT', express_1.default.json(), this.update.bind(this));
         router.delete('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT', this.getNFTById.bind(this));
         router.get('/pack/:packId', this.getNFTsByPackId.bind(this));

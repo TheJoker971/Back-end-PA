@@ -124,7 +124,7 @@ export class NFTService{
 
     async getAllNFTSUser(idUser: string) {
         try {
-            const nfts = await this.nftModel.find({ user: idUser }).exec();
+            const nfts = await this.nftModel.find({ user: idUser }).populate('pack').exec();
             if (nfts !== null) {
                 return ServiceResult.success(nfts);
             }
