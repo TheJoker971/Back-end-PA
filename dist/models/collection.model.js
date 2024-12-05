@@ -7,19 +7,8 @@ exports.collectionSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.String,
         required: true
     },
-    symbol: {
-        type: mongoose_1.Schema.Types.String,
-        required: true
-    },
-    address: {
-        type: mongoose_1.Schema.Types.String,
-        required: true
-    },
-    user: {
+    owner: {
         type: mongoose_1.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+        required: true
     }
-}, {
-    versionKey: false
 });

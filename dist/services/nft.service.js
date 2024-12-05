@@ -16,7 +16,7 @@ class NFTService {
         this.nftModel = registry.nftModel;
         this.packModel = registry.packModel;
     }
-    create(name, symbol, tokenId, address, pack, user, spicyPower) {
+    create(name, symbol, tokenId, address, pack, user, tokenURI, spicyPower) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const nft = yield this.nftModel.findOne({
@@ -26,7 +26,7 @@ class NFTService {
                     return service_result_1.ServiceResult.conflict();
                 }
                 console.log(name, address, symbol, tokenId, user, pack);
-                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, pack: pack, user: user }) : yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, spicyPower: spicyPower, pack: pack });
+                const newNFT = (spicyPower === undefined) ? yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, pack: pack, user: user, listed: false, tokenURI }) : yield this.nftModel.create({ name: name, symbol: symbol, tokenId: tokenId, address: address, spicyPower: spicyPower, pack: pack, listed: false });
                 return service_result_1.ServiceResult.success(newNFT);
             }
             catch (err) {
@@ -34,7 +34,7 @@ class NFTService {
             }
         });
     }
-    update(idNFT, name, symbol, address, pack, user, spicyPower) {
+    update(idNFT, name, symbol, address, pack, user, listed, tokenURI, spicyPower, price) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const isUser = yield this.nftModel.findOne({ _id: idNFT }, { user: user }).populate('pack').exec();
@@ -48,7 +48,10 @@ class NFTService {
                                 address: address,
                                 spicyPower: spicyPower,
                                 pack: pack,
-                                user: user
+                                user: user,
+                                price: price,
+                                listed: listed,
+                                tokenURI: tokenURI
                             }
                         }, { new: true });
                     }
@@ -59,7 +62,10 @@ class NFTService {
                                 symbol: symbol,
                                 address: address,
                                 pack: pack,
-                                user: user
+                                user: user,
+                                price: price,
+                                listed: listed,
+                                tokenId: tokenURI
                             }
                         }, { new: true });
                     }
@@ -120,6 +126,20 @@ class NFTService {
             try {
                 const nfts = yield this.nftModel.find({ pack: packId }).exec();
                 if (nfts !== null && nfts.length > 0) {
+                    return service_result_1.ServiceResult.success(nfts);
+                }
+                return service_result_1.ServiceResult.notFound();
+            }
+            catch (err) {
+                return service_result_1.ServiceResult.failed();
+            }
+        });
+    }
+    getAllNFTSUser(idUser) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const nfts = yield this.nftModel.find({ user: idUser }).populate('pack').exec();
+                if (nfts !== null) {
                     return service_result_1.ServiceResult.success(nfts);
                 }
                 return service_result_1.ServiceResult.notFound();

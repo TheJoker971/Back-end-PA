@@ -28,10 +28,10 @@ class NFTController {
             let sr;
             if (req.body.spicyPower === undefined) {
                 console.log(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user);
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.user, req.body.tokenURI);
             }
             else {
-                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.spicyPower);
+                sr = yield this.nftService.create(req.body.name, req.body.symbol, req.body.tokenId, req.body.address, req.body.pack, req.body.spicyPower, req.body.tokenURI);
             }
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
@@ -45,7 +45,7 @@ class NFTController {
     }
     update(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const sr = yield this.nftService.update(req.params.idNFT, req.body.name, req.body.address, req.body.symbol, req.body.collection, req.user);
+            const sr = yield this.nftService.update(req.params.idNFT, req.body.name, req.body.address, req.body.symbol, req.body.collection, req.user, req.body.price, req.body.listed, req.body.tokenId);
             switch (sr.errorCode) {
                 case service_result_1.ServiceErrorCode.success:
                     res.status(201).json(sr.result);
@@ -111,6 +111,23 @@ class NFTController {
             }
         });
     }
+    getAllNFTSUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const sr = yield this.nftService.getAllNFTSUser(req.params.idUser);
+            console.log(sr.errorCode);
+            switch (sr.errorCode) {
+                case service_result_1.ServiceErrorCode.success:
+                    res.status(200).json(sr.result);
+                    break;
+                case service_result_1.ServiceErrorCode.notFound:
+                    res.status(404).json({ message: "No collections found for this user" });
+                    break;
+                default:
+                    res.status(500).json({ message: "Internal server error" });
+                    break;
+            }
+        });
+    }
     uploadImage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -132,10 +149,11 @@ class NFTController {
         const router = express_1.default.Router();
         router.get('/', this.getAllNFT.bind(this));
         router.post('/', express_1.default.json(), this.create.bind(this));
-        router.patch('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), express_1.default.json(), this.update.bind(this));
+        router.patch('/:idNFT', express_1.default.json(), this.update.bind(this));
         router.delete('/:idNFT', middlewares_1.SessionMiddleware.isLogged(this.authService), this.delete.bind(this));
         router.get('/:idNFT', this.getNFTById.bind(this));
         router.get('/pack/:packId', this.getNFTsByPackId.bind(this));
+        router.get('/user/:idUser', this.getAllNFTSUser.bind(this));
         router.post('/upload-image', uploadMiddleware_1.default.single('image'), this.uploadImage.bind(this));
         return router;
     }
